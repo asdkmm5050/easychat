@@ -29,13 +29,21 @@ public class FriendController {
             return ResponseEntity.badRequest().body("Access denied");
         }
 
-        boolean added = friendService.addFriend(userid, friendid);
+        Optional<User> user = userService.getUser(friendid);
+        if (user.isPresent()) {
+            boolean added = friendService.addFriend(userid, friendid);
 
-        if (added) {
-            return ResponseEntity.ok("Add friend success");
-        } else {
-            return ResponseEntity.badRequest().body("This user is already friend");
+            if (added) {
+                return ResponseEntity.ok("Add friend success");
+            } else {
+                return ResponseEntity.badRequest().body("This user is already friend");
+            }
         }
+
+        return ResponseEntity.badRequest().body("This user is not exist");
+
+
+
     }
 
     //取得好友清單api
