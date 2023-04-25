@@ -1,4 +1,4 @@
-# easychat
+# easychat api
 
 ## User api
 | 說明          | Method   | token  | path                         | param     |
@@ -19,10 +19,10 @@
     ```
 
 ## Friend api
-| 說明              |  Method  | token  | path                                     | param                  |
-| ----------------- |:--------:|:------:|:---------------------------------------- | ---------------------- |
-| `Add friend`      |  `POST`  | `need` | `/api/friend//add/{userid}/{friendid}`   | `user_id`, `friend_id` |
-| `Get friend List` |  `GET`   | `need` | `/api/friend/getlist/{userid}`           | `user_id`              |
+| 說明              | Method   | token  | path                                     | param                  |
+| ----------------- |:-------- |:------:|:---------------------------------------- | ---------------------- |
+| `Add friend`      | `POST`   | `need` | `/api/friend//add/{userid}/{friendid}`   | `user_id`, `friend_id` |
+| `Get friend List` | `GET`    | `need` | `/api/friend/getlist/{userid}`           | `user_id`              |
 | `Delete friend`   | `DELETE` | `need` | `/api/friend/delete/{userid}/{friendid}` | `user_id`, `friend_id` |
 
 **Request 參數說明**
@@ -33,5 +33,3 @@
 
 
      
-
- 
