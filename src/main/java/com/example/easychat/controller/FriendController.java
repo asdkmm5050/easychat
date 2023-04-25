@@ -43,7 +43,6 @@ public class FriendController {
         return ResponseEntity.badRequest().body("This user is not exist");
 
 
-
     }
 
     //取得好友清單api
