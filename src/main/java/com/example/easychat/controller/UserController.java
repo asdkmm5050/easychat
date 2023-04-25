@@ -67,6 +67,8 @@ public class UserController {
             return ResponseEntity.notFound().build();
         }
 
+        user.get().setPassword("****");
+
         Gson gson = new GsonBuilder().create();
 
         return ResponseEntity.ok(gson.toJson( user.get()));

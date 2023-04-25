@@ -29,8 +29,6 @@ public class FriendService {
     public boolean addFriend(int userId, int friendId) {
         Optional<Friend> friend = friendRepository.findByUserIdAndFriendId(userId, friendId);
 
-
-
         if (friend.isPresent()) {
             return false;
         } else {

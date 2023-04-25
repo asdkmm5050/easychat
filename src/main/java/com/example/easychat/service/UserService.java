@@ -20,19 +20,13 @@ public class UserService {
     private final UserRepository userRepository;
 
     public Optional<User> getUser(String username) {
-        Optional<User> user = userRepository.findByUsername(username);
 
-        user.ifPresent(value -> value.setPassword("********"));
-
-        return user;
+        return userRepository.findByUsername(username);
     }
 
     public Optional<User> getUser(int userId) {
-        Optional<User> user = userRepository.findById(userId);
 
-        user.ifPresent(value -> value.setPassword("********"));
-
-        return user;
+        return userRepository.findById(userId);
     }
 
     public void addUser(User user) {
@@ -59,22 +53,6 @@ public class UserService {
             result = "wrong username";
         }
         return result;
-    }
-
-    public boolean validateToken(String token, String username) {
-        try {
-            if (!token.startsWith("Bearer ")) {
-                return false;
-            }
-            token = token.substring(7); // 去除 "Bearer " 字串
-            Claims claims = Jwts.parser().setSigningKey("peko").parseClaimsJws(token).getBody();
-            String payload = claims.getSubject();
-
-            return Objects.equals(payload, username);
-
-        } catch (JwtException | IllegalArgumentException ex) {
-            return false;
-        }
     }
 
     public boolean validateToken(String token, int userId) {

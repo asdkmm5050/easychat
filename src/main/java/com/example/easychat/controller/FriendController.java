@@ -63,7 +63,7 @@ public class FriendController {
         for (Friend friend : friendList) {
             Optional<User> user = userService.getUser(friend.getFriendId());
             if (user.isPresent()) {
-
+                user.get().setPassword("****");
                 String json = gson.toJson(user.get());
                 jsonList.add(json);
 
