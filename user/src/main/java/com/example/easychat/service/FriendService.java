@@ -1,6 +1,7 @@
 package com.example.easychat.service;
 
 import com.example.easychat.entity.Friend;
+import com.example.easychat.entity.User;
 import com.example.easychat.repository.FriendRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,9 @@ public class FriendService {
 
     public boolean addFriend(int userId, int friendId) {
         Optional<Friend> friend = friendRepository.findByUserIdAndFriendId(userId, friendId);
+
+
+
         if (friend.isPresent()) {
             return false;
         } else {
