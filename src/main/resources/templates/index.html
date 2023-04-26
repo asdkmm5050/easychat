@@ -87,7 +87,7 @@
             console.log('webSocket connecting');
         }
         webSocket.onclose = function () {
-            console.log('webSocket已断开。。。');
+            console.log('webSocket break');
             $('#messageArea').append('websocket break\n');
         }
         webSocket.onmessage = function (event) {
