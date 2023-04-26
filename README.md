@@ -17,7 +17,7 @@
         "password":"your_password"
     }
     ```
-- `login`之後會得到一組`jwt token` 需要`token`的`api`請帶入`Header`的`Authorization`欄位。
+- `login`之後會得到一組`jwt token` 需要`token`的`api`請帶入`Header`的`Authorization`欄位並加上前綴`Bearer`。
 
 ## Friend api
 | 說明              | Method   | token  | path                                     |
