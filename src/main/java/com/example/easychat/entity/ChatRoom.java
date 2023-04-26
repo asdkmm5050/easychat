@@ -23,6 +23,12 @@ public class ChatRoom {
     @Column(name = "create_time")
     private String createTime = LocalDateTime.now().toString();
 
+    public ChatRoom(int createrId, String name) {
+        this.name = name;
+        this.createrId = createrId;
+    }
 
+    public ChatRoom() {
 
+    }
 }
