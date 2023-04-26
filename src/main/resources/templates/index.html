@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>websocket-demo</title>
+
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.2.1/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container py-3">
+
+    <div class="row">
+
+        <div class="col-6">
+            <div>
+                <label for="messageArea">chat</label>
+            </div>
+            <div>
+                <textarea id="messageArea" readonly class="w-100" style="height: 75vh;"></textarea>
+            </div>
+        </div>
+
+        <div class="col">
+
+            <div class="my-1">
+                <label for="messageArea">username:</label>
+            </div>
+
+            <div class="my-1">
+                <input type="text" id="username" autocomplete="off">
+            </div>
+
+            <div class="my-1">
+                <button class="btn-info" id="joinUserBtn">register user</button>
+            </div>
+
+            <hr/>
+
+            <div class="my-1">
+                <label for="messageArea">room name:</label>
+            </div>
+
+            <div class="my-1">
+                <input type="text" id="chatRoomName" autocomplete="off">
+            </div>
+
+            <div class="my-1">
+                <button class="btn-info" id="joinRoomBtn">join</button>
+                <button class="btn-warning" id="leaveRoomBtn">leave</button>
+            </div>
+
+            <hr/>
+
+            <div class="my-1">
+                <label for="sendMessage">enter msg:</label>
+            </div>
+            <div>
+                <textarea id="sendMessage" rows="5" class="w-100" style="max-height: 50vh"></textarea>
+            </div>
+
+            <div class="my-1">
+                <button class="btn-primary" id="sendBtn">send</button>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="https://s3.pstatp.com/cdn/expire-1-M/jquery/3.3.1/jquery.min.js"></script>
+
+<script>
+    let webSocket;
+    let username = ''
+
+    $('#joinUserBtn').click(function () {
+        username = $('#username').val();
+    });
+
+    $('#joinRoomBtn').click(function () {
+        let url = 'ws://127.0.0.1:8080/websocket/';
+        let chatRoomName = $('#chatRoomName').val();
+        url = url + chatRoomName + '/' + username;
+        webSocket = new WebSocket(url);
+        webSocket.onopen = function () {
+            console.log('webSocket connecting');
+        }
+        webSocket.onclose = function () {
+            console.log('webSocket已断开。。。');
+            $('#messageArea').append('websocket break\n');
+        }
+        webSocket.onmessage = function (event) {
+            $('#messageArea').append(event.data + '\n');
+        }
+        webSocket.onerror = function (event) {
+            console.log(event)
+            console.log('webSocket error');
+        }
+    });
+
+    $('#leaveRoomBtn').click(function () {
+        if (webSocket) {
+            webSocket.close();
+        }
+    });
+
+    $('#sendBtn').click(function () {
+        const msg = $('#sendMessage').val();
+        if (msg.trim().length === 0) {
+            alert('pls enter something');
+            return;
+        }
+        webSocket.send($('#sendMessage').val());
+
+        $('#sendMessage').val('');
+    });
+
+</script>
+
+</body>
+</html>
