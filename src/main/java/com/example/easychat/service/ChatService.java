@@ -1,8 +1,6 @@
 package com.example.easychat.service;
 
-import com.example.easychat.entity.ChatMessage;
 import com.example.easychat.entity.ChatRoom;
-import com.example.easychat.repository.ChatMessageRepository;
 import com.example.easychat.repository.ChatRoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,11 +12,14 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ChatService {
 
-    ChatRoomRepository chatRoomRepository;
-    ChatMessageRepository chatMessageRepository;
+    private final ChatRoomRepository chatRoomRepository;
 
     public List<ChatRoom> getChatRooms() {
         return chatRoomRepository.findAll();
+    }
+
+    public Optional<ChatRoom> getChatRoom(int chatRoomId) {
+        return chatRoomRepository.findById(chatRoomId);
     }
 
     public Boolean addChatRoom(ChatRoom newChatRoom) {
@@ -30,11 +31,13 @@ public class ChatService {
         return true;
     }
 
-    public List<ChatMessage> getChatMessages(int chatRoomId) {
-        return chatMessageRepository.findAllByChatRoomId(chatRoomId);
+    public Boolean deleteChatRoom(ChatRoom chatRoom, int userId) {
+        if (chatRoom.getCreaterId() != userId) {
+            return false;
+        }
+
+        chatRoomRepository.deleteById(chatRoom.getId());
+        return true;
     }
 
-    public void addChatMessage(ChatMessage chatMessage){
-        chatMessageRepository.save(chatMessage);
-    }
 }
