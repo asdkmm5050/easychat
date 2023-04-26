@@ -1,7 +1,6 @@
 package com.example.easychat.service;
 
 import com.example.easychat.entity.Friend;
-import com.example.easychat.entity.User;
 import com.example.easychat.repository.FriendRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
