@@ -75,15 +75,15 @@ public class UserController {
     }
 
     // 刪除使用者API
-    @DeleteMapping("/delete/{userid}")
-    public ResponseEntity<String> deleteUser(@PathVariable int userid, @RequestHeader("Authorization") String auth) {
+    @DeleteMapping("/delete/{user_id}")
+    public ResponseEntity<String> deleteUser(@PathVariable int user_id, @RequestHeader("Authorization") String auth) {
 
         // 驗證使用者 token 是否有效
-        if (!userService.validateToken(auth, userid)) {
+        if (!userService.validateToken(auth, user_id)) {
             return ResponseEntity.badRequest().body("Access denied");
         }
 
-        Optional<User> user = userService.getUser(userid);
+        Optional<User> user = userService.getUser(user_id);
 
         // 檢查使用者是否存在
         if (user.isEmpty()) {

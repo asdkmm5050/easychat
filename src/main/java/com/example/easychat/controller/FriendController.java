@@ -23,15 +23,15 @@ public class FriendController {
     private final FriendService friendService;
 
     //新增好友api
-    @PostMapping("/add/{userid}/{friendid}")
-    public ResponseEntity<String> add(@PathVariable int userid, @PathVariable int friendid, @RequestHeader("Authorization") String auth) {
-        if (!userService.validateToken(auth, userid)) {
+    @PostMapping("/add/{user_id}/{friend_id}")
+    public ResponseEntity<String> add(@PathVariable int user_id, @PathVariable int friend_id, @RequestHeader("Authorization") String auth) {
+        if (!userService.validateToken(auth, user_id)) {
             return ResponseEntity.badRequest().body("Access denied");
         }
 
-        Optional<User> user = userService.getUser(friendid);
+        Optional<User> user = userService.getUser(friend_id);
         if (user.isPresent()) {
-            boolean added = friendService.addFriend(userid, friendid);
+            boolean added = friendService.addFriend(user_id, friend_id);
 
             if (added) {
                 return ResponseEntity.ok("Add friend success");
@@ -46,13 +46,13 @@ public class FriendController {
     }
 
     //取得好友清單api
-    @GetMapping("/getlist/{userid}")
-    public ResponseEntity<String> getList(@PathVariable int userid, @RequestHeader("Authorization") String auth) {
-        if (!userService.validateToken(auth, userid)) {
+    @GetMapping("/get_list/{user_id}")
+    public ResponseEntity<String> getList(@PathVariable int user_id, @RequestHeader("Authorization") String auth) {
+        if (!userService.validateToken(auth, user_id)) {
             return ResponseEntity.badRequest().body("Access denied");
         }
 
-        List<Friend> friendList = friendService.getFriendList(userid);
+        List<Friend> friendList = friendService.getFriendList(user_id);
         List<String> jsonList = new ArrayList<>();
         if (friendList.isEmpty()) {
             return ResponseEntity.ok("{}");
@@ -73,14 +73,14 @@ public class FriendController {
     }
 
     //刪除好友api
-    @DeleteMapping("/delete/{userid}/{friendid}")
-    public ResponseEntity<String> deleteFriend(@PathVariable int userid, @PathVariable int friendid, @RequestHeader("Authorization") String auth) {
+    @DeleteMapping("/delete/{user_id}/{friend_id}")
+    public ResponseEntity<String> deleteFriend(@PathVariable int user_id, @PathVariable int friend_id, @RequestHeader("Authorization") String auth) {
 
-        if (!userService.validateToken(auth, userid)) {
+        if (!userService.validateToken(auth, user_id)) {
             return ResponseEntity.badRequest().body("Access denied");
         }
 
-        Optional<Friend> friend = friendService.getFriend(userid, friendid);
+        Optional<Friend> friend = friendService.getFriend(user_id, friend_id);
         if (friend.isEmpty()) {
 
             return ResponseEntity.ok("This user is not your friend yet");
