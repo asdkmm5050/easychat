@@ -5,11 +5,12 @@
 | ------------- | -------- |:------ |:---------------------------- |
 | `Register`    | `POST`   |        | `/api/user/register`         |
 | `Login`       | `POST`   |        | `/api/user/login`            |
-| `Search User` | `GET`    | `need` | `/api/user/search/{user_id}` |
+| `Search User` | `GET`    | `need` | `/api/user/search/{user_name}` |
 | `Delete User` | `DELETE` | `need` | `/api/delete/{user_id}`      |
 
 **參數說明**
 - `user_id`:`int`
+- `user_name`:`String`
 - `Register` & `Login` 皆需要RequestBody，格式如下
     ```json
     {
