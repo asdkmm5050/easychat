@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>websocket-demo</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.2.1/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container py-3">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card p-3">
+                <div class="row">
+                    <div class="col-md-8">
+                        <textarea id="findRoom" rows="1" class="form-control"></textarea>
+                    </div>
+                    <div>
+                        <button class="btn btn-primary" id="searchRoomBtn">Add</button>
+                    </div>
+                </div>
+                <p/>
+                <ul class="list-group list-group-flush" id="chatRooms">
+                </ul>
+            </div>
+            <div class="card p-3">
+                <div class="row">
+                    <div class="col-md-8">
+                        <textarea id="addFriend" rows="1" class="form-control"></textarea>
+                    </div>
+                    <div>
+                        <button class="btn btn-primary" id="addFriendBtn">Add</button>
+                    </div>
+                </div>
+                <p/>
+                <ul class="list-group list-group-flush" id="friendsList">
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card p-3">
+                <textarea id="messageArea" readonly class="form-control" style="height: 60vh;"></textarea>
+                <div class="mb-3">
+                    <label for="sendMessage" class="form-label">Enter Message:</label>
+                    <textarea id="sendMessage" rows="5" class="form-control"></textarea>
+                </div>
+                <button class="btn btn-primary" id="sendBtn">Send</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="https://s3.pstatp.com/cdn/expire-1-M/jquery/3.3.1/jquery.min.js"></script>
+<script>
+    let roomList;
+    $.ajax({
+        type: "GET",
+        url: "http://localhost:8080/api/chat/room/get_list",
+        contentType: "application/json; charset=utf-8",
+        dataType: "text",
+        async: true,
+        success: function (response) {
+            const chatRoomObj = JSON.parse(response);
+            roomList = chatRoomObj;
+            console.log(roomList );
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            console.log("Error: " + textStatus + " " + errorThrown);
+        }
+
+    });
+</script>
+</body>
+</html>
