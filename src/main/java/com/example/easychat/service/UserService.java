@@ -39,7 +39,7 @@ public class UserService {
         String result;
         if (user.isPresent()) {
             if (user.get().getPassword().equals(password)) {
-                Date expireDate = new Date(System.currentTimeMillis() + 30 * 60 * 1000);
+                Date expireDate = new Date(System.currentTimeMillis() + 60 * 60 * 1000);
                 result = Jwts.builder()
                         .setSubject(username)
                         .setExpiration(expireDate)
