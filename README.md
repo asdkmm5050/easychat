@@ -5,7 +5,7 @@
 | ------------- | -------- |:------ |:---------------------------- |
 | `Register`    | `POST`   |        | `/api/user/register`         |
 | `Login`       | `POST`   |        | `/api/user/login`            |
-| `Search User` | `GET`    | `need` | `/api/user/search/{user_name}` |
+| `Search User` | `GET`    |        | `/api/user/search/{user_name}` |
 | `Delete User` | `DELETE` | `need` | `/api/delete/{user_id}`      |
 
 **參數說明**
