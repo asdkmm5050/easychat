@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login Page</title>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<form id="Login-form">
+    <h2>Login</h2>
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" required><br><br>
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required><br><br>
+    <input type="submit" value="Login">
+</form>
+<div id="message"></div>
+<script>
+    $(document).ready(function () {
+        $("#Login-form").submit(function (e) {
+            e.preventDefault();
+            const formData = {
+                "username": $("#username").val(),
+                "password": $("#password").val()
+            };
+            let auth = null;
+            let userId = null;
+            $.ajax({
+                type: "POST",
+                url: "http://localhost:8080/api/user/login",
+                data: JSON.stringify(formData),
+                async: false,
+                contentType: "application/json; charset=utf-8",
+                dataType: "text",
+                success: function (response) {
+                    auth = response;
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.log("Error: " + textStatus + " " + errorThrown);
+                }
+
+            });
+
+            $.ajax({
+                type: "GET",
+                url: "http://localhost:8080/api/user/search/" + formData.username,
+                contentType: "application/json; charset=utf-8",
+                dataType: "text",
+                async: false,
+                success: function (response) {
+                    const userObj = JSON.parse(response);
+                    userId = userObj.id;
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.log("Error: " + textStatus + " " + errorThrown);
+                }
+
+            });
+
+            document.cookie = "Authorization=" + auth;
+            document.cookie = "username=" + formData.username;
+            document.cookie = "userId=" + userId + ";expires=" + new Date(Date.now() + 86400000).toUTCString();//一個day
+            console.log(document.cookie);
+
+        });
+    });
+
+</script>
+</body>
+</html>
