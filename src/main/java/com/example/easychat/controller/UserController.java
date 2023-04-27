@@ -59,7 +59,7 @@ public class UserController {
 
     // 查詢使用者API
     @GetMapping("/search/{username}")
-    public ResponseEntity<String> getUser(@PathVariable String username, @RequestHeader("Authorization") String auth) {
+    public ResponseEntity<String> getUser(@PathVariable String username) {
 
         // 查詢使用者資訊
         Optional<User> user = userService.getUser(username);

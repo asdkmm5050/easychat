@@ -24,6 +24,7 @@ public class AuthorizationCheckFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain chain) throws ServletException, IOException {
         if (!req.getServletPath().equals("/api/user/login")
                 && !req.getServletPath().equals("/api/user/register")
+                && !req.getServletPath().contains("api/user/search/")
                 && !req.getServletPath().equals("/api/chat/room/get_list")
                 && !req.getServletPath().contains("/websocket")
                 && !req.getServletPath().equals("/")) {
