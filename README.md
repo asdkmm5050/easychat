@@ -5,7 +5,7 @@
 | ------------- | -------- |:------ |:---------------------------- |
 | `Register`    | `POST`   |        | `/api/user/register`         |
 | `Login`       | `POST`   |        | `/api/user/login`            |
-| `Search User` | `GET`    | `need` | `/api/user/search/{user_name}` |
+| `Search User` | `GET`    |        | `/api/user/search/{user_name}` |
 | `Delete User` | `DELETE` | `need` | `/api/delete/{user_id}`      |
 
 **參數說明**
@@ -33,10 +33,10 @@
 
 ## Chat api
 | 說明           | Method | token  | path                                             |
-| -------------- | ------ |:------ |:------------------------------------------------ |
-| `Get all room` | `GET`  |        | `/api/chat/room/get_list`                        |
+| -------------- | --- |:------ |:------------------------------------------------ |
+| `Get all room` | `GET` |        | `/api/chat/room/get_list`                        |
 | `Add new room` | `POST` | `need` | `/api/chat/room/add/{user_id}/{chat_room_name}`  |
-| `Delete room`  | `GET`  | `need` | `/api/chat/room/delete/{user_id}/{chat_room_id}` |
+| `Delete room`  | `DELETE`  | `need` | `/api/chat/room/delete/{user_id}/{chat_room_id}` |
 
 **參數說明**
 - `user_id`:`int`
