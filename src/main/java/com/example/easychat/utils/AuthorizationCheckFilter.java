@@ -25,6 +25,7 @@ public class AuthorizationCheckFilter extends OncePerRequestFilter {
         if (!req.getServletPath().equals("/api/user/login")
                 && !req.getServletPath().equals("/api/user/register")
                 && !req.getServletPath().equals("/api/chat/room/get_list")
+                && !req.getServletPath().contains("/websocket")
                 && !req.getServletPath().equals("/")) {
 
             String authorHeader = req.getHeader(AUTHORIZATION);
