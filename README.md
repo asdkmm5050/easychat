@@ -23,7 +23,7 @@
 ## Friend api
 | 說明              | Method   | token  | path                                     |
 | ----------------- |:-------- |:------ |:---------------------------------------- |
-| `Add friend`      | `POST`   | `need` | `/api/friend//add/{userid}/{friendid}`   |
+| `Add friend`      | `POST`   | `need` | `/api/friend/add/{userid}/{friendid}`   |
 | `Get friend List` | `GET`    | `need` | `/api/friend/get_list/{userid}`          |
 | `Delete friend`   | `DELETE` | `need` | `/api/friend/delete/{userid}/{friendid}` |
 
