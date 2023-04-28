@@ -31,7 +31,12 @@ public class UserController {
         }
 
         // 驗證使用者並返回 JWT token
-        return ResponseEntity.ok(userService.verifyUser(username, password));
+
+        String result = userService.verifyUser(username, password);
+        if (result.equals("")) {
+            return ResponseEntity.badRequest().body("Wrong username/password");
+        }
+        return ResponseEntity.ok(result);
     }
 
     // 註冊API
@@ -71,7 +76,7 @@ public class UserController {
 
         Gson gson = new GsonBuilder().create();
 
-        return ResponseEntity.ok(gson.toJson( user.get()));
+        return ResponseEntity.ok(gson.toJson(user.get()));
     }
 
     // 刪除使用者API
@@ -95,7 +100,6 @@ public class UserController {
 
         return ResponseEntity.ok("User deleted successfully");
     }
-
 
 
 }
