@@ -7,6 +7,7 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -38,7 +39,10 @@ public class UserService {
         Optional<User> user = userRepository.findByUsername(username);
         String result;
         if (user.isPresent()) {
-            if (user.get().getPassword().equals(password)) {
+            String salt = user.get().getSalt();
+            String hashPassword = BCrypt.hashpw(password, salt);
+
+            if (user.get().getPassword().equals(hashPassword)) {
                 Date expireDate = new Date(System.currentTimeMillis() + 60 * 60 * 1000);
                 result = Jwts.builder()
                         .setSubject(username)
@@ -47,10 +51,10 @@ public class UserService {
                         .compact();
 
             } else {
-                result = "wrong password";
+                result = "";
             }
         } else {
-            result = "wrong username";
+            result = "";
         }
         return result;
     }

@@ -2,6 +2,7 @@ package com.example.easychat.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import java.time.LocalDateTime;
 
@@ -20,13 +21,17 @@ public class User {
     @Column(name = "password")
     private String password;
 
+    @Column(name = "salt")
+    private String salt;
+
     @Column(name = "create_time")
     private String createTime = LocalDateTime.now().toString();
 
 
     public User(String username, String password) {
         this.username = username;
-        this.password = password;
+        this.salt = BCrypt.gensalt();
+        this.password = BCrypt.hashpw(password, this.salt);
     }
 
     public User() {
