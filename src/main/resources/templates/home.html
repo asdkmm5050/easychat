@@ -2,43 +2,48 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>websocket-demo</title>
+    <title>Easy Chat</title>
     <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.2.1/css/bootstrap.min.css">
 </head>
 <body>
 <div class="container py-3">
     <div class="row">
-        <div class="col-md-3">
-            <div class="card p-3">
-                <div class="row">
-                    <div class="col-md-8">
-                        <textarea id="findRoom" rows="1" class="form-control"></textarea>
-                    </div>
-                    <div>
-                        <button class="btn btn-primary" id="searchRoomBtn">Add</button>
-                    </div>
-                </div>
-                <p/>
-                <ul class="list-group list-group-flush" id="chatRooms">
-                </ul>
-            </div>
-            <div class="card p-3">
-                <div class="row">
-                    <div class="col-md-8">
-                        <textarea id="addFriend" rows="1" class="form-control"></textarea>
-                    </div>
-                    <div>
-                        <button class="btn btn-primary" id="addFriendBtn">Add</button>
-                    </div>
-                </div>
-                <p/>
-                <ul class="list-group list-group-flush" id="friendsList">
-                </ul>
-            </div>
-        </div>
         <div class="col-md-6">
             <div class="card p-3">
-                <textarea id="messageArea" readonly class="form-control" style="height: 60vh;"></textarea>
+                <div>
+                    <h5>Room list</h5>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-8">
+                        <textarea id="roomName" rows="1" class="form-control"></textarea>
+                    </div>
+                    <div class="col-md-4">
+                        <button class="btn btn-primary w-100" id="addRoomBtn">+</button>
+                    </div>
+                </div>
+                <ul class="list-group list-group-flush" id="chatRoomList"></ul>
+            </div>
+
+            <div class="card p-3 mt-3">
+                <div>
+                    <h5>Friend list</h5>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-8">
+                        <textarea id="friendId" rows="1" class="form-control"></textarea>
+                    </div>
+                    <div class="col-md-4">
+                        <button class="btn btn-primary w-100" id="addFriendBtn" onclick="addFriend();">+</button>
+                    </div>
+                </div>
+                <ul class="list-group list-group-flush" id="friendsList"></ul>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card p-3">
+                <div id="roomNameLabel"></div>
+                <textarea id="messageArea" readonly class="form-control" style="height: 50vh;"></textarea>
                 <div class="mb-3">
                     <label for="sendMessage" class="form-label">Enter Message:</label>
                     <textarea id="sendMessage" rows="5" class="form-control"></textarea>
@@ -46,28 +51,183 @@
                 <button class="btn btn-primary" id="sendBtn">Send</button>
             </div>
         </div>
-
     </div>
 </div>
+<style>
+    #chatRoomList {
+        max-height: 40vh;
+        overflow-y: auto;
+    }
+
+    #friendsList {
+        max-height: 40vh;
+        overflow-y: auto;
+    }
+
+</style>
 <script src="https://s3.pstatp.com/cdn/expire-1-M/jquery/3.3.1/jquery.min.js"></script>
 <script>
-    let roomList;
-    $.ajax({
-        type: "GET",
-        url: "http://localhost:8080/api/chat/room/get_list",
-        contentType: "application/json; charset=utf-8",
-        dataType: "text",
-        async: true,
-        success: function (response) {
-            const chatRoomObj = JSON.parse(response);
-            roomList = chatRoomObj;
-            console.log(roomList );
-        },
-        error: function (jqXHR, textStatus, errorThrown) {
-            console.log("Error: " + textStatus + " " + errorThrown);
-        }
 
+    const username = getCookie("username");
+    const userId = getCookie("userId");
+    const auth = getCookie("Authorization");
+    const ip = "http://localhost:8080"
+    const ws = "localhost:8080";
+    let roomId = "";
+    let roomName = "";
+    let webSocket;
+
+    window.onload = function () {
+        getFriendList();
+        getRoomList();
+        setInterval(getRoomList, 1000);
+    }
+
+
+
+    function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+    }
+
+    function getFriendList() {
+        $.ajax({
+            type: "GET",
+            url: ip + "/api/friend/get_list/" + userId,
+            async: true,
+            contentType: "application/json; charset=utf-8",
+            dataType: "text",
+            headers: {
+                "Authorization": "Bearer " + auth
+            },
+            success: function (response) {
+                const friendsList = document.getElementById("friendsList");
+                const friends = JSON.parse(response);
+                friendsList.innerHTML = "";
+                for (let i = 0; i < friends.length; i++) {
+                    const friend = friends[i];
+                    console.log(friend);
+                    const listItem = document.createElement("a");
+                    listItem.href = "#";
+                    listItem.addEventListener("click", function () {
+                    });
+
+                    listItem.innerHTML = `<div><h7>${friend.username}(${friend.id})</h7></div>`;
+                    friendsList.appendChild(listItem);
+                }
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                window.alert(xhr.responseText);
+            }
+        });
+    }
+
+    function getRoomList() {
+        $.ajax({
+            type: "GET",
+            url: ip + "/api/chat/room/get_list",
+            async: true,
+            contentType: "application/json; charset=utf-8",
+            dataType: "text",
+            success: function (response) {
+                const chatRoomsList = document.getElementById("chatRoomList");
+                const rooms = JSON.parse(response);
+                chatRoomsList.innerHTML = "";
+                for (let i = 0; i < rooms.length; i++) {
+                    const room = rooms[i];
+                    const listItem = document.createElement("a");
+                    listItem.href = "#";
+                    listItem.addEventListener("click", function () {
+                        roomId = room.id;
+                        roomName = room.name;
+                        joinRoom();
+                    });
+                    listItem.innerHTML = `<h7>${room.name}(${room.id}) by ${room.createrId}</h7>`;
+                    chatRoomsList.appendChild(listItem);
+                }
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                window.alert(xhr.responseText);
+            }
+        });
+    }
+
+    function joinRoom() {
+        if (webSocket) {
+            webSocket.close();
+        }
+        let url = 'ws://' + ws + '/websocket/' + roomId + '/' + username + '(' + userId + ')';
+        document.getElementById("roomNameLabel").innerHTML = `<h5>${roomName}</h5>`;
+        webSocket = new WebSocket(url);
+        webSocket.onopen = function () {
+            console.log('webSocket connecting');
+        }
+        webSocket.onclose = function () {
+            console.log('webSocket break');
+            $('#messageArea').empty();
+        }
+        webSocket.onmessage = function (event) {
+            $('#messageArea').append(event.data + '\n');
+        }
+        webSocket.onerror = function (event) {
+            console.log(event)
+            console.log('webSocket error');
+        }
+    }
+
+    $('#sendBtn').click(function () {
+        const msg = $('#sendMessage').val();
+        if (msg.trim().length === 0) {
+            alert('pls enter something');
+            return;
+        }
+        webSocket.send($('#sendMessage').val());
+
+        $('#sendMessage').val('');
     });
+
+    $(`#addFriendBtn`).click(function () {
+        const friendId = $("#friendId").val();
+        $.ajax({
+            type: "POST",
+            url: ip + "/api/friend/add/" + userId + "/" + friendId,
+            async: true,
+            contentType: "application/json; charset=utf-8",
+            dataType: "text",
+            headers: {
+                "Authorization": "Bearer " + auth
+            },
+            success: function (response) {
+                getFriendList();
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                window.alert(xhr.responseText);
+            }
+        });
+    });
+
+    $(`#addRoomBtn`).click(function () {
+        const roomName = $("#roomName").val();
+        $.ajax({
+            type: "POST",
+            url: ip + "/api/chat/room/add/" + userId + "/" + roomName,
+            async: true,
+            contentType: "application/json; charset=utf-8",
+            dataType: "text",
+            headers: {
+                "Authorization": "Bearer " + auth
+            },
+            success: function (response) {
+                getRoomList();
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                window.alert(xhr.responseText);
+            }
+        });
+    });
+
+
 </script>
 </body>
 </html>

@@ -2,20 +2,35 @@
 <html>
 <head>
     <title>Login Page</title>
-
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.2.1/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-<form id="Login-form">
-    <h2>Login</h2>
-    <label for="username">Username:</label>
-    <input type="text" id="username" name="username" required><br><br>
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password" required><br><br>
-    <input type="submit" value="Login">
-</form>
-<div id="message"></div>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <form id="Login-form">
+                <h2 class="text-center mb-4">Login</h2>
+                <div class="form-group">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Login" class="btn btn-primary btn-block">
+                    <input type="button" value="Register" class="btn btn-outline-secondary btn-block"
+                           onclick="location.href='http://localhost:8080/register'">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 <script>
+    const ip = "http://localhost:8080"
+    let auth = null;
     $(document).ready(function () {
         $("#Login-form").submit(function (e) {
             e.preventDefault();
@@ -23,47 +38,50 @@
                 "username": $("#username").val(),
                 "password": $("#password").val()
             };
-            let auth = null;
-            let userId = null;
             $.ajax({
                 type: "POST",
-                url: "http://localhost:8080/api/user/login",
+                url: ip + "/api/user/login",
                 data: JSON.stringify(formData),
                 async: false,
                 contentType: "application/json; charset=utf-8",
                 dataType: "text",
                 success: function (response) {
                     auth = response;
+                    getUser(formData.username);
                 },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    console.log("Error: " + textStatus + " " + errorThrown);
+                error: function (xhr, textStatus, errorThrown) {
+                    window.alert(xhr.responseText);
                 }
 
             });
-
-            $.ajax({
-                type: "GET",
-                url: "http://localhost:8080/api/user/search/" + formData.username,
-                contentType: "application/json; charset=utf-8",
-                dataType: "text",
-                async: false,
-                success: function (response) {
-                    const userObj = JSON.parse(response);
-                    userId = userObj.id;
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    console.log("Error: " + textStatus + " " + errorThrown);
-                }
-
-            });
-
-            document.cookie = "Authorization=" + auth;
-            document.cookie = "username=" + formData.username;
-            document.cookie = "userId=" + userId + ";expires=" + new Date(Date.now() + 86400000).toUTCString();//一個day
-            console.log(document.cookie);
 
         });
+        $("#Login-form").register(function (e) {
+            location.replace(ip + "/register");
+        });
     });
+
+    function getUser(username) {
+        $.ajax({
+            type: "GET",
+            url: ip + "/api/user/search/" + username,
+            contentType: "application/json; charset=utf-8",
+            dataType: "text",
+            async: false,
+            success: function (response) {
+                const userObj = JSON.parse(response);
+                document.cookie = "Authorization=" + auth;
+                document.cookie = "username=" + username;
+                document.cookie = "userId=" + userObj.id + ";expires=" + new Date(Date.now() + 86400000).toUTCString();//一個day
+                window.alert("success");
+                location.replace(ip + "/home")
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                window.alert(xhr.responseText);
+            }
+
+        });
+    }
 
 </script>
 </body>
