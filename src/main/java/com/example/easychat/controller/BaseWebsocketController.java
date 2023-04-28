@@ -5,7 +5,6 @@ import jakarta.websocket.server.PathParam;
 import jakarta.websocket.server.ServerEndpoint;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
 import java.util.Map;
@@ -25,13 +24,13 @@ public class BaseWebsocketController {
         Map<String, Session> sessions = rooms.computeIfAbsent(room, k -> new ConcurrentHashMap<>());
         sessions.put(session.getId(), session);
         session.getUserProperties().put("username", username);
-        sendToRoom(room, "[" + username + "] enter");
+        sendToRoom(room, username + "-加入聊天室");
     }
 
     @OnMessage
     public void onMessage(Session session, String message, @PathParam("room") String room) {
         String username = (String) session.getUserProperties().get("username");
-        sendToRoom(room, "[" + username + "]" + message);
+        sendToRoom(room, username + " : " + message);
     }
 
     @OnClose
@@ -39,7 +38,7 @@ public class BaseWebsocketController {
         String username = (String) session.getUserProperties().get("username"); // 从Session属性中检索username
         Map<String, Session> sessions = rooms.getOrDefault(room, new ConcurrentHashMap<>());
         sessions.remove(session.getId());
-        sendToRoom(room, "[" + username + "] leave");
+        sendToRoom(room, username + "-離開聊天室");
     }
 
     @OnError
