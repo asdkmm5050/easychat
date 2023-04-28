@@ -1,5 +1,10 @@
 # easychat api
 
+## 簡易前端示意圖
+![image](https://user-images.githubusercontent.com/52891597/235135855-5d8d0a77-952e-4522-989c-7dee2d62d1d1.png)
+
+
+
 ## User api
 | 說明          | Method   | token  | path                         |
 | ------------- | -------- |:------ |:---------------------------- |
